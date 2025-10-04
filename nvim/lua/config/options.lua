@@ -14,8 +14,10 @@ local options = {
     ttyfast = true,            --faster scrolling
     smoothscroll = true,       --makes scrolling smooth
     title = true,              --automatic window titlebar
+    virtualedit = 'onemore', --allow cursor to move one more position past end of line
 
-    number = true,             --numbering lines
+    --numbering
+    number = true,             
     relativenumber = true, 
     numberwidth = 4,
 
@@ -37,6 +39,8 @@ local options = {
     concealcursor = "nc",
 
     splitkeep = 'screen', --stablizie window open/close
+
+    
 }
 
 for k, v in pairs(options) do
@@ -47,4 +51,4 @@ vim.diagnostic.config({
     signs = false,  --disabels diagnostic signs(error/warning markers) in gutter
 })
 
-vim.opt.virtualedit = 'onemore' --allow cursor to move one more position past end of line
+

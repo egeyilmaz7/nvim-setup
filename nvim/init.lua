@@ -4,6 +4,7 @@ require("core.lsp")
 require("config.mappings")
 require("config.autocmd")
 
+
 require("tiny-inline-diagnostic").setup({
     -- ...
     signs = {

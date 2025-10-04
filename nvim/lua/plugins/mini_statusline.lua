@@ -1,9 +1,12 @@
 return {
-    "echasnovski/mini.statusline",
-    version = false,
-    config = function()
-      require("mini.statusline").setup({
-        use_icons = true, -- set false if you don’t want Nerd Font icons
+  'echasnovski/mini.statusline',
+  config = function()
+      require('mini.statusline').setup({
+          content = {
+              active = nil,  -- Use default
+          },
+          use_icons = true,
+          set_vim_settings = true,
       })
-    end,
-  }
+  end
+}
