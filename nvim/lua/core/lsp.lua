@@ -1,74 +1,69 @@
--- write your lsps in here
+--enable lsps
 vim.lsp.enable({
-  "lua_ls",
   "rust_analyzer",
   "taplo",
 })
 
---rust language support 
+--rust_analyzer config
 vim.lsp.config("rust_analyzer", {
-  cmd = { "rust-analyzer" }, 
+  cmd = { "rust-analyzer" },
   settings = {
     ["rust-analyzer"] = {
       cargo = {
         allFeatures = true,
         loadOutDirsFromCheck = true,
-        buildScripts = {
-          enable = true,
-        },
+        buildScripts = { enable = true },
       },
       check = {
         command = "clippy",
-        extraArgs = { "--no-deps" }
+        extraArgs = { "--no-deps" },
       },
-      procMacro = {
-        enable = true,
-        ignored = {
-          leptos_macro = {
-            "component",
-            "server",
-          },
-        },
-      },
-      diagnostics = {
-        enable = true,
-        experimental = {
-          enable = false,
-        },
-      },
+      procMacro = { enable = true },
+      diagnostics = { enable = true },
     },
+  },
+  -- Disable ALL rust-analyzer handlers that spam messages
+  handlers = {
+    ["$/progress"] = function() end,
+    ["experimental/serverStatus"] = function() end,
+    ["rust-analyzer/serverStatus"] = function() end,
+  },
+  -- Set flags to reduce chattiness
+  flags = {
+    debounce_text_changes = 150,
   },
 })
 
--- hide overly long loop msg 
-vim.lsp.handlers["window/logMessage"] = function(err, result, ctx, config)
-  if result and result.message and result.message:match("overly long loop") then
-    return
+-- Filter out rust-analyzer spam from notifications
+local original_notify = vim.notify
+vim.notify = function(msg, level, opts)
+  -- Block messages containing rust-analyzer spam keywords
+  if type(msg) == "string" then
+    if msg:match("rust%-analyzer") 
+       or msg:match("prime_caches")
+       or msg:match("overly long loop")
+       or msg:match("ms") and msg:match("cancelled") then
+      return
+    end
   end
-  return vim.lsp.handlers["window/logMessage"](err, result, ctx, config)
+  original_notify(msg, level, opts)
 end
 
--- Filter notifications
-local notify = vim.notify
-vim.notify = function(msg, ...)
-  if msg:match("overly long loop") then
-    return
-  end
-  notify(msg, ...)
-end
-
--- diagnostic config
+-- diagnostics config with modern signs
 vim.diagnostic.config({
-  underline = false,
+  underline = true,
   virtual_text = false,
-  update_in_insert = false,
-  severity_sort = true,
   signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN] = " ",
-      [vim.diagnostic.severity.HINT] = " ",
-      [vim.diagnostic.severity.INFO] = " ",
-    }
-  }
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN]  = " ",
+      [vim.diagnostic.severity.INFO]  = " ",
+      [vim.diagnostic.severity.HINT]  = " ",
+    },
+  },
+  update_in_insert = false,
+  severity_sort = true,
 })
+
+-- toml support 
+vim.lsp.config("taplo", {})

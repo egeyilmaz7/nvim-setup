@@ -2,22 +2,5 @@ require("config.options")
 require("core.lazy")
 require("core.lsp")
 require("config.mappings")
-require("config.autocmd")
+require("config.autocmds")
 
-
-require("tiny-inline-diagnostic").setup({
-    -- ...
-    signs = {
-      left = "",
-      right = "",
-      diag = "●",
-      arrow = "    ",
-      up_arrow = "    ",
-      vertical = " │",
-      vertical_end = " └",
-    },
-    blend = {
-      factor = 0.22,
-    },
-    -- ...
-  })
